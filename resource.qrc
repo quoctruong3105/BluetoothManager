@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>image/bluetooth.png</file>
+        <file>image/refresh.png</file>
+    </qresource>
+</RCC>
