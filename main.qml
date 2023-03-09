@@ -7,8 +7,8 @@ import Qt.labs.settings 1.0
 
 Window {
     id: rootId
-    width: 700
-    height: 400
+    width: 300
+    height: 550
     visible: true
     title: qsTr("Hello World")
 
