@@ -68,7 +68,7 @@ void BluetoothScanner::clearAllDevice()
 
 void BluetoothScanner::deviceDiscovered(const QBluetoothDeviceInfo &device)
 {
-    if (device.name().contains("Bluetooth ")) {
+    if (device.name().contains("Bluetooth ") || device.name() == "") {
         return;
     }
     for(int i = 0; i < availableDevices.count(); i++) {
@@ -86,13 +86,17 @@ void BluetoothScanner::connectToDevice(QString deviceName)
         disconnecToDevice();
     }
     mSocket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol, this);
-    QBluetoothUuid serviceUuid = QBluetoothUuid::ServiceClassUuid::GenericAudio;
+    QBluetoothUuid serviceUuid = QBluetoothUuid::ServiceClassUuid::AdvancedAudioDistribution;
     connect(mSocket, &QBluetoothSocket::connected, this, &BluetoothScanner::socketConnected);
     connect(mSocket, &QBluetoothSocket::disconnected, this, &BluetoothScanner::socketDisconnected);
     for(int i = 0; i < availableDevices.count(); i++) {
         if(deviceName == availableDevices.at(i).name()) {
-            mSocket->connectToService(QBluetoothAddress(availableDevices.at(i).address()), serviceUuid,
-                                      QIODevice::ReadOnly);
+            currentDevice = availableDevices.at(i);
+            if(!localDevice->pairingStatus(availableDevices.at(i).address())) {
+                localDevice->requestPairing(availableDevices.at(i).address(), QBluetoothLocalDevice::Paired);
+            }
+            mSocket->connectToService(availableDevices.at(i).address(), serviceUuid,
+                                      QIODevice::WriteOnly);
             break;
         }
     }
@@ -104,6 +108,7 @@ void BluetoothScanner::disconnecToDevice()
     mSocket->disconnectFromService();
     delete mSocket;
     mSocket = nullptr;
+    localDevice->requestPairing(currentDevice.address(), QBluetoothLocalDevice::Unpaired);
 }
 
 void BluetoothScanner::socketConnected()
