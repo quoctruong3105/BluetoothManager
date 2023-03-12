@@ -36,6 +36,7 @@ private:
     QList<QBluetoothDeviceInfo> availableDevices;
     QBluetoothSocket *mSocket;
     QBluetoothLocalDevice* localDevice;
+    QBluetoothDeviceInfo currentDevice;
 };
 
 #endif // BLUETOOTHSCANNER_H

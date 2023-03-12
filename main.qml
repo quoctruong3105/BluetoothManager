@@ -7,8 +7,8 @@ import Qt.labs.settings 1.0
 
 Window {
     id: rootId
-    width: 300
-    height: 550
+    width: 640
+    height: 350
     visible: true
     title: qsTr("Hello World")
 
@@ -52,7 +52,7 @@ Window {
 
     Timer {
         id: timer
-        interval: 1000
+        interval: 2000
         repeat: false
         onTriggered: {
             loadingId.running = false
