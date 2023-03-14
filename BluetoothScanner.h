@@ -29,8 +29,8 @@ public slots:
     void disconnecToDevice();
 private slots:
     void deviceDiscovered(const QBluetoothDeviceInfo &device);
-    void socketConnected();
-    void socketDisconnected();
+//    void socketConnected();
+//    void socketDisconnected();
     //void readData();
 private:
     QList<QBluetoothDeviceInfo> availableDevices;
