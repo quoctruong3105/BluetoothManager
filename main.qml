@@ -18,9 +18,11 @@ Window {
     property int pairedDeviceCount: 0
 
     function showAll() {
+        bluetoothAvailableList.clear()
         var length = bluetoothScannerId.getListLength()
         for(var i = 0; i < length; i ++) {
-            bluetoothAvailableList.append({"name" : bluetoothScannerId.getBluetoothDeviceName(i)})
+            if(bluetoothScannerId.getBluetoothDeviceName(i) !== pairedDeviceNameId.text)
+                bluetoothAvailableList.append({"name" : bluetoothScannerId.getBluetoothDeviceName(i)})
         }
     }
 
@@ -34,7 +36,6 @@ Window {
     }
 
     function startScanning() {
-        loadingId.running = true
         timer.start()
     }
 
@@ -42,20 +43,11 @@ Window {
         id: bluetoothScannerId
     }
 
-    BusyIndicator {
-        id: loadingId
-        running: false
-        anchors.top: availableDeviceTextId.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-
     Timer {
         id: timer
-        interval: 2000
-        repeat: false
+        interval: 500
+        repeat: true
         onTriggered: {
-            loadingId.running = false
             showAll()
         }
     }
@@ -167,7 +159,7 @@ Window {
         font.pointSize: 10
     }
 
-    ListView {
+    Flickable {
         id: bluetoothAvailableView
         width: parent.width
         height: parent.height
@@ -175,35 +167,46 @@ Window {
         anchors.topMargin: 5
         clip: true
         visible: availableDeviceTextId.visible
-        model: bluetoothAvailableList
-        delegate: RowLayout {
-            spacing: 20
-            Rectangle {
-                width: rootId.width
-                height: deviceNameId.implicitHeight + 15
-                radius: 30
-                color: "lightgrey"
-                border.color: "white"
-                Text {
-                    id: deviceNameId
-                    x: 20
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: name
-                    font.pointSize: 15
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        if(pairedDeviceCount === 0) {
-                            pairedDeviceCount++
-                            pairedDeviceNameId.text = name
-                            removeDevice()
-                            bluetoothScannerId.connectToDevice(pairedDeviceNameId.text)
-                        } else {
-                            bluetoothAvailableList.append({"name":pairedDeviceNameId.text})
-                            pairedDeviceNameId.text = name
-                            removeDevice()
-                            bluetoothScannerId.connectToDevice(pairedDeviceNameId.text)
+        ListView {
+//            id: bluetoothAvailableView
+//            width: parent.width
+//            height: parent.height
+//            anchors.top: availableDeviceTextId.bottom
+//            anchors.topMargin: 5
+//            clip: true
+//            visible: availableDeviceTextId.visible
+            width: parent.width
+            height: parent.height
+            model: bluetoothAvailableList
+            delegate: RowLayout {
+                spacing: 20
+                Rectangle {
+                    width: rootId.width
+                    height: deviceNameId.implicitHeight + 15
+                    radius: 30
+                    color: "lightgrey"
+                    border.color: "white"
+                    Text {
+                        id: deviceNameId
+                        x: 20
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: name
+                        font.pointSize: 15
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if(pairedDeviceCount === 0) {
+                                pairedDeviceCount++
+                                pairedDeviceNameId.text = name
+                                removeDevice()
+                                bluetoothScannerId.connectToDevice(pairedDeviceNameId.text)
+                            } else {
+                                bluetoothAvailableList.append({"name":pairedDeviceNameId.text})
+                                pairedDeviceNameId.text = name
+                                removeDevice()
+                                bluetoothScannerId.connectToDevice(pairedDeviceNameId.text)
+                            }
                         }
                     }
                 }

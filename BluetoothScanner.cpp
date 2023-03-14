@@ -14,19 +14,21 @@ void BluetoothScanner::enableLocalDeviceBluetooth()
         if (localDevice->hostMode() == QBluetoothLocalDevice::HostPoweredOff) {
             // Enable Bluetooth
             localDevice->powerOn();
-            qDebug() << "Bluetooth turned on";
+            //qDebug() << "Bluetooth turned on";
 
             // Wait for Bluetooth to be enabled
             QEventLoop loop;
             QObject::connect(localDevice, SIGNAL(hostModeStateChanged(QBluetoothLocalDevice::HostMode)),
                              &loop, SLOT(quit()));
             loop.exec();
-        } else {
-            qDebug() << "Bluetooth already enabled";
         }
-    } else {
-        qDebug() << "Bluetooth not available on this device";
+//        else {
+//            qDebug() << "Bluetooth already enabled";
+//        }
     }
+//    else {
+//        qDebug() << "Bluetooth not available on this device";
+//    }
 }
 
 void BluetoothScanner::disableLocalDeviceBluetooth()
@@ -86,13 +88,13 @@ void BluetoothScanner::connectToDevice(QString deviceName)
         disconnecToDevice();
     }
     mSocket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol, this);
-    QBluetoothUuid serviceUuid = QBluetoothUuid::ServiceClassUuid::AdvancedAudioDistribution;
-    connect(mSocket, &QBluetoothSocket::connected, this, &BluetoothScanner::socketConnected);
-    connect(mSocket, &QBluetoothSocket::disconnected, this, &BluetoothScanner::socketDisconnected);
+    QBluetoothUuid serviceUuid = QBluetoothUuid::ServiceClassUuid::GenericAudio;
+//    connect(mSocket, &QBluetoothSocket::connected, this, &BluetoothScanner::socketConnected);
+//    connect(mSocket, &QBluetoothSocket::disconnected, this, &BluetoothScanner::socketDisconnected);
     for(int i = 0; i < availableDevices.count(); i++) {
         if(deviceName == availableDevices.at(i).name()) {
             currentDevice = availableDevices.at(i);
-            if(!localDevice->pairingStatus(availableDevices.at(i).address())) {
+            if(localDevice->pairingStatus(availableDevices.at(i).address()) != QBluetoothLocalDevice::Paired) {
                 localDevice->requestPairing(availableDevices.at(i).address(), QBluetoothLocalDevice::Paired);
             }
             mSocket->connectToService(availableDevices.at(i).address(), serviceUuid,
@@ -104,22 +106,22 @@ void BluetoothScanner::connectToDevice(QString deviceName)
 
 void BluetoothScanner::disconnecToDevice()
 {
-    connect(mSocket, &QBluetoothSocket::disconnected, this, &BluetoothScanner::socketDisconnected);
+    //connect(mSocket, &QBluetoothSocket::disconnected, this, &BluetoothScanner::socketDisconnected);
     mSocket->disconnectFromService();
     delete mSocket;
     mSocket = nullptr;
     localDevice->requestPairing(currentDevice.address(), QBluetoothLocalDevice::Unpaired);
 }
 
-void BluetoothScanner::socketConnected()
-{
-    qDebug() << "Bluetooth socket connected";
-}
+//void BluetoothScanner::socketConnected()
+//{
+//    qDebug() << "Bluetooth socket connected";
+//}
 
-void BluetoothScanner::socketDisconnected()
-{
-    qDebug() << "Bluetooth socket disconnected";
-}
+//void BluetoothScanner::socketDisconnected()
+//{
+//    qDebug() << "Bluetooth socket disconnected";
+//}
 
 
 
