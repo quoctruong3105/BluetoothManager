@@ -22,13 +22,7 @@ void BluetoothScanner::enableLocalDeviceBluetooth()
                              &loop, SLOT(quit()));
             loop.exec();
         }
-//        else {
-//            qDebug() << "Bluetooth already enabled";
-//        }
     }
-//    else {
-//        qDebug() << "Bluetooth not available on this device";
-//    }
 }
 
 void BluetoothScanner::disableLocalDeviceBluetooth()
@@ -78,7 +72,7 @@ void BluetoothScanner::deviceDiscovered(const QBluetoothDeviceInfo &device)
             return;
         }
     }
-
+    qDebug() << device.deviceUuid().toString();
     availableDevices.append(device);
 }
 
@@ -120,7 +114,7 @@ void BluetoothScanner::disconnecToDevice()
 
 //void BluetoothScanner::socketDisconnected()
 //{
-//    qDebug() << "Bluetooth socket disconnected";
+//    qDebug() << "Bluetooth socket disco nnected";
 //}
 
 

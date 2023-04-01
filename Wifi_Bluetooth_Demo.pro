@@ -1,5 +1,6 @@
 QT += quick
 QT += bluetooth
+QT += ANDROID_API_VERSION
 CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.

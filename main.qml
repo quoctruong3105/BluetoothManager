@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.0
-import com.company.bluetoothscanner 1.0
+import com.company.BluetoothScanner 1.0
 import Qt.labs.settings 1.0
 
 Window {

@@ -1,5 +1,5 @@
-#ifndef BLUETOOTHSCANNER_H
-#define BLUETOOTHSCANNER_H
+#ifndef BluetoothScanner_H
+#define BluetoothScanner_H
 
 #include <QObject>
 #include <QDebug>
@@ -11,6 +11,7 @@
 #include <QEventLoop>
 #include <QList>
 #include <QByteArray>
+#include <QVector>
 
 class BluetoothScanner : public QObject
 {
@@ -39,4 +40,4 @@ private:
     QBluetoothDeviceInfo currentDevice;
 };
 
-#endif // BLUETOOTHSCANNER_H
+#endif // BluetoothScanner_H

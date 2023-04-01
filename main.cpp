@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
     QGuiApplication app(argc, argv);
-    qmlRegisterType<BluetoothScanner>("com.company.bluetoothscanner", 1, 0, "BluetoothScanner");
+    qmlRegisterType<BluetoothScanner>("com.company.BluetoothScanner", 1, 0, "BluetoothScanner");
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
