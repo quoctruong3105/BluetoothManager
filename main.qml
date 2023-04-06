@@ -10,6 +10,7 @@ Window {
     width: 640
     height: 350
     visible: true
+    //visibility: "Fullscreen"
     title: qsTr("Hello World")
 
     property string colorOn: "#4361ee"
@@ -220,5 +221,6 @@ Window {
 
     Component.onCompleted: {
         bluetoothScannerId.startDeviceDiscovery()
+        bluetoothScannerId.getProfile()
     }
 }

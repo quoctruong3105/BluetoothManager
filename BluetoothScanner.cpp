@@ -72,7 +72,7 @@ void BluetoothScanner::deviceDiscovered(const QBluetoothDeviceInfo &device)
             return;
         }
     }
-    qDebug() << device.deviceUuid().toString();
+    qDebug() << device.serviceUuids();
     availableDevices.append(device);
 }
 
@@ -106,6 +106,74 @@ void BluetoothScanner::disconnecToDevice()
     mSocket = nullptr;
     localDevice->requestPairing(currentDevice.address(), QBluetoothLocalDevice::Unpaired);
 }
+
+QStringList BluetoothScanner::getProfile(QString deviceName)
+{
+    QStringList profiles;
+
+    QJniEnvironment env;
+    if (env.checkAndClearExceptions()) {
+        // Handle JNI exception
+        env.checkAndClearExceptions();
+        return profiles;
+    }
+
+    // Get the BluetoothAdapter object
+    QJniObject bluetoothAdapter = QJniObject::callStaticObjectMethod("android/bluetooth/BluetoothAdapter",
+                                                                     "getDefaultAdapter",
+                                                                     "()Landroid/bluetooth/BluetoothAdapter;");
+
+    if (env.checkAndClearExceptions()) {
+        // Handle JNI exception
+        env.checkAndClearExceptions();
+        return profiles;
+    }
+
+    // Get the Set of paired Bluetooth devices
+    QJniObject pairedDevices = bluetoothAdapter.callObjectMethod("getBondedDevices",
+                                                                  "()Ljava/util/Set;");
+
+    // Convert the paired devices Set to a QList<QString>
+    //QList<QString> deviceList;
+    QJniObject iterator = pairedDevices.callObjectMethod("iterator", "()Ljava/util/Iterator;");
+    while (iterator.callMethod<jboolean>("hasNext", "()Z")) {
+        QJniObject device = iterator.callObjectMethod("next", "()Ljava/lang/Object;");
+        QString name = device.callMethod<jstring>("getName", "()Ljava/lang/String;").toString();
+        if (name == deviceName) {
+            QJniObject uuids = device.callObjectMethod("getUuids", "()[Landroid/os/ParcelUuid;");
+            jobjectArray uuidsArray = uuids.object<jobjectArray>();
+            int uuidsArrayLength = env->GetArrayLength(uuidsArray);
+            // Get the list of supported profiles for this device
+            QList<QString> profileList;
+            for (int i = 0; i < uuidsArrayLength; i++) {
+                QJniObject uuid(env->GetObjectArrayElement(uuidsArray, i));
+                //QString uuidStr = uuid.callObjectMethod<jstring>("toString", "()Ljava/lang/String;").toString();
+                const char* signature = "()Ljava/lang/String;";
+                QString uuidStr = uuid.callObjectMethod<jstring>(signature).toString();
+                if (uuidStr.contains("0000111e")) {
+                    profileList.append("Handsfree");
+                } else if (uuidStr.contains("0000110b")) {
+                    profileList.append("Audio Sink");
+                } else if (uuidStr.contains("00001105")) {
+                    profileList.append("SPP");
+                } else if (uuidStr.contains("0000111f")) {
+                    profileList.append("Advanced Audio Distribution Profile (A2DP)");
+                } else if (uuidStr.contains("0000110e")) {
+                    profileList.append("Personal Area Networking Profile (PAN)");
+                } else if (uuidStr.contains("0000112f")) {
+                    profileList.append("Phone Book Access Profile (PBAP)");
+                }
+            }
+            profiles = profileList;
+            return profiles;
+        }
+    }
+    // If the device name was not found, return an empty list
+    qDebug() << "Truong123";
+    return profiles;
+}
+
+
 
 //void BluetoothScanner::socketConnected()
 //{
