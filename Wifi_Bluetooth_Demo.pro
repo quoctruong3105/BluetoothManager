@@ -1,6 +1,8 @@
 QT += quick
 QT += bluetooth
 CONFIG += c++11
+QT += core-private
+QT += core
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -8,6 +10,8 @@ CONFIG += c++11
 
 SOURCES += \
         BluetoothScanner.cpp \
+        helper.cpp \
+        l.cpp \
         main.cpp
 
 RESOURCES += qml.qrc \

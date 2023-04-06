@@ -1,5 +1,5 @@
-#ifndef BLUETOOTHSCANNER_H
-#define BLUETOOTHSCANNER_H
+#ifndef BluetoothScanner_H
+#define BluetoothScanner_H
 
 #include <QObject>
 #include <QDebug>
@@ -11,6 +11,12 @@
 #include <QEventLoop>
 #include <QList>
 #include <QByteArray>
+#include <QVector>
+#include <QJniObject>
+#include <QJniEnvironment>
+#include <QtCore/private/qandroidextras_p.h>
+
+
 
 class BluetoothScanner : public QObject
 {
@@ -27,11 +33,12 @@ public slots:
     void clearAllDevice();
     void connectToDevice(QString deviceName);
     void disconnecToDevice();
+    QStringList getProfile(QString deviceName);
 private slots:
     void deviceDiscovered(const QBluetoothDeviceInfo &device);
 //    void socketConnected();
 //    void socketDisconnected();
-    //void readData();
+//    void readData();
 private:
     QList<QBluetoothDeviceInfo> availableDevices;
     QBluetoothSocket *mSocket;
@@ -39,4 +46,4 @@ private:
     QBluetoothDeviceInfo currentDevice;
 };
 
-#endif // BLUETOOTHSCANNER_H
+#endif // BluetoothScanner_H
